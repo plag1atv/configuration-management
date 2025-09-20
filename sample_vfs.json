@@ -1,0 +1,21 @@
+{
+  "name": "demo-vfs",
+  "root": {
+    "type": "dir",
+    "entries": {
+      "motd": {
+        "type": "file",
+        "content": "SGVsbG8sIHRoaXMgaXMgbXkgVkZTIQ=="
+      },
+      "dir1": {
+        "type": "dir",
+        "entries": {
+          "file.txt": {
+            "type": "file",
+            "content": "SGVsbG8gZnJvbSBmaWxl"
+          }
+        }
+      }
+    }
+  }
+}
