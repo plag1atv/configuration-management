@@ -16,7 +16,6 @@ class VFS:
             self.load_vfs(vfs_path)
 
     def load_vfs(self, vfs_path: str) -> None:
-        """Загружает виртуальную файловую систему из JSON файла"""
         try:
             with open(vfs_path, 'r', encoding='utf-8') as f:
                 data = json.load(f)
@@ -28,7 +27,6 @@ class VFS:
             self.root = {}
 
     def get_file_content(self, path: str) -> Optional[str]:
-        """Получает содержимое файла из VFS"""
         parts = [p for p in path.split('/') if p]
         current = self.root.get('entries', {})
 
@@ -48,7 +46,6 @@ class VFS:
         return None
 
     def list_directory(self, path: str) -> List[str]:
-        """Возвращает список содержимого директории в VFS"""
         if path == '/' or path == '':
             current = self.root.get('entries', {})
         else:
@@ -73,7 +70,6 @@ class ShellEmulator:
         self.script_path = script_path
         self.is_running_script = False
 
-        # Отладочный вывод параметров
         print("DEBUG: Параметры запуска:")
         print(f"DEBUG: - VFS путь: {vfs_path}")
         print(f"DEBUG: - Скрипт путь: {script_path}")
@@ -117,18 +113,16 @@ class ShellEmulator:
                 print(f"Ошибка выполнения команды {command}: {e}")
                 return False
         else:
-            print(f"Неизвестная команда: {command}")  # ИСПРАВЛЕНО: было {e}, теперь {command}
+            print(f"Неизвестная команда: {command}")
             return False
 
     def cmd_ls(self, args: List[str]) -> None:
         path = args[0] if args else "."
         if path.startswith('/'):
-            # Работа с VFS
             entries = self.vfs.list_directory(path)
             for entry in entries:
                 print(entry)
         else:
-            # Работа с реальной файловой системой
             try:
                 actual_path = os.path.expanduser(path) if path == "~" else path
                 if os.path.exists(actual_path):
@@ -153,14 +147,12 @@ class ShellEmulator:
 
         filename = args[0]
         if filename.startswith('/'):
-            # Чтение из VFS
             content = self.vfs.get_file_content(filename)
             if content is not None:
                 print(content)
             else:
                 print(f"Файл не найден в VFS: {filename}")
         else:
-            # Чтение из реальной файловой системы
             try:
                 with open(filename, 'r', encoding='utf-8') as f:
                     print(f.read())
@@ -178,7 +170,6 @@ class ShellEmulator:
         self.running = False
 
     def run_script(self, script_path: str) -> None:
-        """Выполняет стартовый скрипт"""
         if not os.path.exists(script_path):
             print(f"Ошибка: скрипт не найден: {script_path}")
             return
@@ -193,15 +184,12 @@ class ShellEmulator:
 
             for line_num, line in enumerate(lines, 1):
                 line = line.strip()
-                # Пропускаем пустые строки и комментарии
                 if not line or line.startswith('#'):
                     continue
 
-                # Отображаем ввод (имитация пользовательского ввода)
                 prompt = self.get_prompt()
                 print(f"{prompt}{line}")
 
-                # Выполняем команду
                 parts = self.parse_arguments(line)
                 if not parts:
                     continue
@@ -225,14 +213,12 @@ class ShellEmulator:
         print("Для выхода введите 'exit'")
         print("-" * 50)
 
-        # Если указан скрипт - выполняем его
         if self.script_path:
             self.run_script(self.script_path)
             if not self.is_running_script:
                 print("Возврат в интерактивный режим...")
                 print("-" * 50)
 
-        # Интерактивный режим
         while self.running:
             try:
                 prompt = self.get_prompt()
