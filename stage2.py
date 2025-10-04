@@ -19,7 +19,7 @@ class VFS:
         try:
             with open(vfs_path, 'r', encoding='utf-8') as f:
                 data = json.load(f)
-            self.root = data.get('root', {})
+            self.root = data.get('roo t', {})
             print(f"DEBUG: VFS загружена из {vfs_path}")
             print(f"DEBUG: Корневая структура: {list(self.root.keys())}")
         except Exception as e:
